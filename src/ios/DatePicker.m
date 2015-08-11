@@ -35,12 +35,16 @@
 #pragma mark - UIDatePicker
 
 - (void)show:(CDVInvokedUrlCommand*)command {
-  NSMutableDictionary *options = [command argumentAtIndex:0];
-  if (isIPhone) {
-    [self showForPhone: options];
-  } else {
-    [self showForPad: options];
-  }
+  [self.commandDelegate runInBackground:^{
+        NSMutableDictionary *options = [command argumentAtIndex:0];
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            if (isIPhone) {
+                [self showForPhone: options];
+            } else {
+                [self showForPad: options];
+            }
+        });
+    }];
 }
 
 - (BOOL)showForPhone:(NSMutableDictionary *)options {
